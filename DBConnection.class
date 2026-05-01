@@ -1,0 +1,48 @@
+package util;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class DBConnection {
+   private static final String HOST = "localhost";
+   private static final String PORT = "3306";
+   private static final String DATABASE = "vlxd_manager";
+   private static final String USERNAME = "root";
+   private static final String PASSWORD = "";
+   private static final String URL = "jdbc:mysql://localhost:3306/vlxd_manager?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
+   private static Connection connection = null;
+
+   public DBConnection() {
+   }
+
+   public static Connection getConnection() {
+      try {
+         if (connection == null || connection.isClosed()) {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/vlxd_manager?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true", "root", "");
+            System.out.println("[DB] Kết nối thành công!");
+         }
+      } catch (ClassNotFoundException var1) {
+         System.err.println("[DB] Không tìm thấy MySQL Driver. Hãy thêm mysql-connector-j vào classpath.");
+         var1.printStackTrace();
+      } catch (SQLException var2) {
+         System.err.println("[DB] Lỗi kết nối: " + var2.getMessage());
+         var2.printStackTrace();
+      }
+
+      return connection;
+   }
+
+   public static void closeConnection() {
+      try {
+         if (connection != null && !connection.isClosed()) {
+            connection.close();
+            System.out.println("[DB] Đã đóng kết nối.");
+         }
+      } catch (SQLException var1) {
+         var1.printStackTrace();
+      }
+
+   }
+}
